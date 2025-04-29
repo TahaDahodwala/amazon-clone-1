@@ -1,85 +1,35 @@
 <!DOCTYPE html>
-<html>
-	<head>
-			<title>Checkout</title>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout</title>
+  <link rel="stylesheet" href="/styles/checkout.css">
+</head>
+<body>
+  <header>
+    <div class="cart-quantity"></div>
+  </header>
 
-			<meta name="viewport" content="width=device-width, initial-scale = 1">
+  <main>
+    <section class="js-order-summary"></section>
 
-			<link rel="preconnect" href="https://fonts.googleapis.com">
-			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-			<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <section class="order-summary-section">
+      <h2>Order Summary</h2>
+      <p>Delivery Date: <span class="order-summary-date">Select a delivery option</span></p>
+      <p>Shipping Price: <span class="order-summary-price">$0.00</span></p>
+    </section>
 
-			<link rel="stylesheet" href="styles/common/amazon-mainpage.css">
-			<link rel="stylesheet" href="styles/pages/checkout-header.css">
-			<link rel="stylesheet" href="styles/pages/checkout.css">
-	</head>
-	<body>
-		<div class="checkout-header">
-			<div class="header-content">
-				<div class="header-left">
-					<a href="amazon.html">
-						<img class="amazon-logo" src="images/amazon-logo.png">
-						<img class="amazon-mobile-logo" src="images/amazon-mobile-logo.png">
-					</a>
-				</div>
+    <section class="payment-summary">
+      <div class="payment-summary-loading" style="display:none;">Loading...</div>
+      <p>Subtotal: <span class="payment-summary-subtotal">$0.00</span></p>
+      <p>Shipping: <span class="payment-summary-shipping">$0.00</span></p>
+      <p>Before Tax: <span class="payment-summary-before-tax">$0.00</span></p>
+      <p>Tax (10%): <span class="payment-summary-tax">$0.00</span></p>
+      <p>Total: <span class="payment-summary-total">$0.00</span></p>
+      <button class="place-order-button">Place Order</button>
+    </section>
+  </main>
 
-				<div class="header-middle">
-					Checkout (<a class="return-home cart-quantity" href="amazon.html"></a>)
-				</div>
-
-				<div class="header-right">
-					<img src="images/icons/checkout-lock-icon.png">
-				</div>
-			</div>
-		</div>
-
-		<div class="main">
-			<div class="title">Review your order</div>
-
-			<div class="checkout-grid">
-				<div class="order-summary js-order-summary">
-				</div>
-
-				<div class="payment-summary">
-					<div class="payment-summary-title">
-						Order Summary
-					</div>	
-
-					<div class="payment-summary-row">
-						<div>Items (5):</div>
-						<div class="payment-summary-subtotal">$58.99</div>
-					</div>
-
-					<div class="payment-summary-row">
-						<div>Shipping &amp; handling:</div>
-						<div class="payment-summary-shipping">$4.99</div>
-					</div>
-
-					<div class="payment-summary-row subtotal-row">
-						<div>Total before Tax:</div>
-						<div class="payment-summary-before-tax">$63.98</div>
-					</div>
-
-					<div class="payment-summary-row">
-						<div>Estimated Tax (10%):</div>
-						<div class="payment-summary-tax">$6.39</div>
-					</div>
-
-					<div class="payment-summary-row total-row">
-						<div>Order total:</div>
-						<div class="payment-summary-total">$70.37</div>
-					</div>
-
-					<div class="place-order-button button-primary">
-						Place your order
-					</div>
-					<div class="payment-summary-loading">
-						<img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3JqcDgxdHV2aWhyZXo0YXZnZHJrcXYzMDN5eGJlZWY0NjI1cmw3bCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/aqd1tYU4WvlO3FiYvo/giphy.gif"
-						 alt="Loading..." style="width: 100px;">
-					</div>
-				</div>
-			</div>
-		</div>
-		<script type="module" src="/scripts/checkout.js"></script>
-	</body>
+  <script type="module" src="/scripts/checkout.js"></script>
+</body>
 </html>
