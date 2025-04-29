@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Orders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+    />
+
+    <link rel="stylesheet" href="styles/pages/amazon.css" />
+    <link rel="stylesheet" href="styles/common/amazon-header.css" />
+    <link rel="stylesheet" href="styles/pages/orders.css" />
+  </head>
+  <body>
+    <div class="amazon-header">
+      <div class="header-left">
+        <a href="amazon.html" class="amazon-header-link">
+          <img src="images/amazon-logo-white.png" class="amazon-logo" />
+          <img
+            src="images/amazon-mobile-logo-white.png"
+            class="mobile-amazon-logo"
+          />
+        </a>
+      </div>
+      <div class="header-middle">
+        <input class="search-bar" type="text" placeholder="Search" />
+        <button class="search-button">
+          <img src="images/icons/search-icon.png" class="search-icon" />
+        </button>
+      </div>
+      <div class="header-right">
+        <a href="orders.html" class="orders-link amazon-header-link">
+          <span class="returns-text">Returns</span>
+          <span class="orders-text">& Orders</span>
+        </a>
+
+        <a href="checkout.html" class="checkout-link amazon-header-link">
+          <img class="cart-icon" src="images/icons/cart-icon.png" />
+          <div class="cart-quantity">3</div>
+          <div class="cart-text">Cart</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="title">Your Orders</div>
+
+      <div class="orders-grid">
+        <div class="order-container">
+          <div class="order-header">
+            <div class="order-header-left">
+              <div class="order-date">
+                <div class="order-label">Order Placed:</div>
+                <div>March 29</div>
+              </div>
+
+              <div class="order-total">
+                <div class="order-label">Total:</div>
+                <div>$73.38</div>
+              </div>
+            </div>
+
+            <div class="order-header-right">
+              <div class="order-label">Order ID:</div>
+              <div>iuheff-uhjrh12-1e99oje-2@312-3y3</div>
+            </div>
+          </div>
+
+          <!-- 🧹 Cleared dummy order products -->
+          <div class="order-details-grid order-details-grid-js">
+            <!-- JavaScript will inject orders here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ Linked your script correctly -->
+    <script type="module" src="/scripts/orders.js"></script>
+  </body>
+</html>

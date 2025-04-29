@@ -1,0 +1,79 @@
+.main{
+  max-width: 850px;
+  margin-top: 90px;
+  margin-bottom: 100px;
+  padding-left: 30px;
+  padding-right: 30px;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.orders-link{
+  display: inline-block;
+  margin-bottom: 30px;
+}
+
+.delivery-date{
+  font-size: 35px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: rgb(74, 189, 74);
+}
+
+.product-info{
+  margin-bottom: 12px;
+}
+
+.product-image{
+  max-width: 400px;
+  max-height: 400px;
+  margin-top: 25px;
+  margin-bottom: 50px;
+}
+
+.progress-labels-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.current-status{
+  color: rgb(28, 204, 28);
+}
+
+@media (max-width: 550px){
+  .progress-labels-container{
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 450px){
+  .progress-labels-container{
+      flex-direction: column;
+      margin-bottom: 5px;
+  }
+
+  .progress-label{
+    margin-bottom: 3px;
+  }
+}
+
+.progress-bar-container{
+  height: 20px;
+  width: 100%;
+
+  border: 1px solid rgb(212, 212, 231);
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.progress-bar{
+  height: 100%;
+  background-color: green;
+  border-radius: 50px;
+  width: 50%;
+}

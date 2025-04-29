@@ -1,0 +1,71 @@
+import {cart, updateCartQuantity, addToCart, cartMessageTimeout} from '/scripts/cart.js';
+import { products } from '/scripts/products.js';
+updateCartQuantity();
+
+let productsHTML = '';
+
+products.forEach((product) => {
+  productsHTML += `
+  <div class="product-container">
+    <div class="product-image-container">
+      <img src="${product.image}" class="product-image">
+    </div>
+    <div class="product-name limit-text-to-2-lines">
+      ${product.name}
+    </div>
+
+    <div class="rating-container">
+      <img src="images/ratings/rating-${product.rating.stars * 10}.png" class="rating-stars">
+      <div class="rating-count link-primary">
+        ${product.rating.count}
+      </div>
+    </div>
+
+    <div class="price">
+      $${(product.priceCents / 100).toFixed(2)}
+    </div>
+
+    <div class="product-quantity">
+      <select class='added-product-quantity-id-${product.id}'>
+        <option selected value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>	
+      </select>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="added-to-cart js-added-to-cart-${product.id}">
+      <img src="images/icons/checkmark.png">
+      Added
+    </div>
+
+    <button class="add-to-cart-button button-primary cart-js" 
+    data-added-product-id = "${product.id}" 
+    data-added-product-name = "${product.name}">
+      Add to cart
+    </button>
+  </div>
+  `;
+
+})
+document.querySelector(".products-js").innerHTML = productsHTML;
+
+document.querySelectorAll(".cart-js")
+.forEach((button) => {
+  button.addEventListener('click', () => {
+    let addedProductName = button.dataset.addedProductName;
+    let addedProductId = button.dataset.addedProductId;
+    addToCart(addedProductName, addedProductId);
+    updateCartQuantity();
+    cartMessageTimeout(addedProductId);
+  });
+});
+
