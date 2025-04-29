@@ -1,155 +1,310 @@
 import { products } from "/scripts/products.js";
-import { cart, removeItemFromCart, updateCartQuantity } from "/scripts/cart.js";
+import {cart, removeItemFromCart, updateCartQuantity} from "/scripts/cart.js";
 
-function getFutureDates(days) {
-  const today = new Date();
-  today.setDate(today.getDate() + days);
-  return today.toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric'
+
+export function calculateAmount(cart) {
+return cart.reduce((total,item) => total + (item.price * item.quantity), 0);
+}
+
+export function getFutureDates(dateToAdd) {
+const today = new Date();
+today.setDate(today.getDate() + dateToAdd);
+const options = {weekday: 'long', month: 'long', day: 'numeric'};
+return today.toLocaleDateString('en-US', options);
+}
+
+
+updateCartQuantity();
+let checkoutHTML='';
+let matchingId;
+
+cart.forEach((cartItem) => {
+
+  const addedProductId = cartItem.addedProductId;
+
+  products.forEach((product) => {
+    if (product.id === addedProductId)  {
+      matchingId = product;  
+    }
   });
-}
 
-function calculateAmount(cart) {
-  return cart.reduce((total, item) => {
-    const product = products.find(p => p.id === item.addedProductId);
-    return total + (product ? (product.priceCents / 100) * item.quantity : 0);
-  }, 0);
-}
+  checkoutHTML+= `
+  <div class="cart-item-container js-cart-item-container">
+    <div class="delivery-date">
+      Delivery date: ${getFutureDates(2)}
+    </div>
 
-function renderCheckoutPage() {
-  const container = document.querySelector(".js-order-summary");
-  if (!container) {
-    console.error("Element with class '.js-order-summary' not found!");
-    return;
-  }
+    <div class="cart-items-details-grid">
+      <img class="product-image" 
+      src="${matchingId.image}">
 
-  let html = '';
-  cart.forEach(item => {
-    const product = products.find(p => p.id === item.addedProductId);
-    if (!product) return;
+      <div class="cart-items-details">
+        <div class="product-name">
+          ${matchingId.name}
+        </div>
 
-    html += `
-      <div class="cart-item-container">
-        <div class="delivery-date">Delivery date: ${getFutureDates(2)}</div>
-        <div class="cart-items-details-grid">
-          <img class="product-image" src="${product.image}">
-          <div class="cart-items-details">
-            <div class="product-name">${product.name}</div>
-            <div class="product-price">$${(product.priceCents / 100).toFixed(2)}</div>
-            <div class="product-quantity">
-              Quantity: <span class="quantity-label">${item.quantity}</span>
-              <span class="update-cart-js" data-product-id="${product.id}">Update</span>
-              <span class="delete-from-cart-js" data-delete-from-cart="${product.id}">Delete</span>
+        <div class="product-price">
+          $${(matchingId.priceCents / 100).toFixed(2)}
+        </div>
+
+        <div class="product-quantity">
+          <span>
+          Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+        </span>
+        <span class="update-quantity primary-link update-cart-js"
+        data-product-id="${matchingId.id}">
+          Update
+        </span>
+        <span class="delete-quantity primary-link delete-from-cart-js"
+        data-delete-from-cart="${matchingId.id}">
+          Delete
+        </span>
+        </div>
+      </div>
+
+      <div class="deliver-options">
+        <div class="delivery-options-title">
+          Choose a delivery option:
+        </div>
+
+        <div class="deliver-option">
+          <input type="radio" checked
+          class="delivery-option-input"
+          name="delivery-option-${matchingId.id}"
+          data-date = "${getFutureDates(7)}"
+          data-price = "0.00">
+          <div>
+            <div class="delivery-option-date">
+              ${getFutureDates(7)}
+            </div>
+            <div class="delivery-option-price">
+              FREE shipping
             </div>
           </div>
-          <div class="deliver-options">
-            <div>Choose a delivery option:</div>
-            ${[7, 4, 2].map(day => `
-              <label>
-                <input type="radio" class="delivery-option-input" name="delivery-option-${product.id}"
-                  data-date="${getFutureDates(day)}" data-price="${(9 - (day * 1.5)).toFixed(2)}" ${day === 7 ? 'checked' : ''}>
-                ${getFutureDates(day)} - $${(9 - (day * 1.5)).toFixed(2)} Shipping
-              </label>
-            `).join('')}
+        </div>
+
+        <div class="deliver-option">
+          <input type="radio"
+          class="delivery-option-input"
+          name="delivery-option-${matchingId.id}"
+          data-date = "${getFutureDates(4)}"
+          data-price = "4.99">
+          <div>
+            <div class="delivery-option-date">
+              ${getFutureDates(4)}
+            </div>
+            <div class="delivery-option-price">
+              $4.99 - Shipping
+            </div>
+          </div>
+        </div>
+
+        <div class="deliver-option">
+          <input type="radio"
+          class="delivery-option-input"
+          name="delivery-option-${matchingId.id}"
+          data-date = "${getFutureDates(2)}"
+          data-price = "9.99">
+          <div>
+            <div class="delivery-option-date">
+              ${getFutureDates(2)}
+            </div>
+            <div class="delivery-option-price">
+              $9.99 - Shipping
+            </div>
           </div>
         </div>
       </div>
-    `;
+    </div>
+  </div>
+  `;
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const orderSummaryContainer = document.querySelector(".js-order-summary");
+  if (orderSummaryContainer) {
+    orderSummaryContainer.innerHTML = checkoutHTML;
+  } else {
+    console.error("Element with class '.js-order-summary' not found!");
+  }
+
+  // You can safely run the rest of your DOM manipulation here too
+});
+
+
+document.querySelectorAll(".delete-from-cart-js").forEach(link => {
+  link.addEventListener('click', () => {
+    const removeItemId = link.dataset.deleteFromCart;
+    removeItemFromCart(removeItemId);
+    console.log(cart);
+    location.reload();
+  })
+})
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateCartQuantity();  // Update cart quantity in the header on page load
+  let total = 0;
+  // Make the cart quantity clickable to redirect to the homepage
+  document.querySelector('.cart-quantity').addEventListener('click', () => {
+    window.location.href = 'amazon.html';  // Redirect to the homepage
   });
+});
 
-  container.innerHTML = html;
+updateCartQuantity();
 
-  document.querySelectorAll('.delete-from-cart-js').forEach(btn => {
-    btn.addEventListener('click', () => {
-      removeItemFromCart(btn.dataset.deleteFromCart);
-      location.reload();
-    });
-  });
+document.querySelectorAll('.update-cart-js').forEach(updateLink => {
+  updateLink.addEventListener('click', () => {
+    const productId = updateLink.dataset.productId;
+    const newQuantity = prompt("Enter new quantity (1 - 10): ");
+    const quantityNumber = Number(newQuantity);
 
-  document.querySelectorAll('.update-cart-js').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const newQty = Number(prompt("Enter new quantity (1–10):"));
-      const cartItem = cart.find(i => i.addedProductId === btn.dataset.productId);
-      if (cartItem && newQty >= 1 && newQty <= 10) {
-        cartItem.quantity = newQty;
+    if (quantityNumber >= 1 && quantityNumber <= 10){
+
+      const matchingCartItem = cart.find(item => item.addedProductId === productId);
+      if(matchingCartItem){
+        matchingCartItem.quantity = quantityNumber;
         localStorage.setItem('cart-saved', JSON.stringify(cart));
+        updateCartQuantity();
         location.reload();
-      } else {
-        alert("Invalid quantity!");
       }
-    });
+      }
+      else{
+        alert("Please enter a valid number (1 - 10)");
+      }
   });
+}); 
 
-  document.querySelectorAll('.delivery-option-input').forEach(input => {
-    input.addEventListener('change', updatePaymentSummary);
+document.querySelectorAll('.delivery-option-input').forEach(radio => {
+  radio.addEventListener('click', () => {
+    const selectedDate = radio.closest('.deliver-option').querySelector('.delivery-option-date').innerText;
+    const updateDate = radio.closest('.cart-item-container').querySelector('.delivery-date');
+
+    updateDate.innerText = `Delivery date: ${selectedDate}`;
   });
+});
+
+document.querySelectorAll('.delivery-option-input').forEach(option => {
+  option.addEventListener('change', () => {
+
+    const selectedDate = option.getAttribute('data-date');
+    const selectedPrice = option.getAttribute('data-price');
+
+    const orderSummaryDate = document.querySelector('.order-summary-date');
+    const orderSummaryPrice = document.querySelector('.order-summary-price');
+
+    orderSummaryDate.textContent = selectedDate;
+    orderSummaryPrice = `$${parseFloat(selectedPrice).toFloat(2)}`;
+    updateTotalPrice();
+  });
+});
+
+function updateTotalPrice () {
+  let total = 0;
+  cart.forEach (item => {
+    total = item.quantity * (priceCents/100);
+  });
+  const shippingCost = parseFloat(document.querySelector('.order-summary-price').textContent.replace("$", " "));
+  total += shippingCost;
+
+  document.querySelector('.order-summary-price').textContent = `${total.Tofixed(2)}`;
 }
 
 function updatePaymentSummary() {
-  const loading = document.querySelector('.payment-summary-loading');
-  if (!loading) return;
-
-  loading.style.display = 'block';
+  const loadingSpinner = document.querySelector('.payment-summary-loading');
+  loadingSpinner.style.display = 'block'; // show spinner first
 
   setTimeout(() => {
-    let subTotal = 0, shipping = 0;
-    cart.forEach(item => {
-      const product = products.find(p => p.id === item.addedProductId);
-      if (!product) return;
+    const cartItems = document.querySelectorAll('.cart-item-container');
+    let subTotal = 0;
+    let shipping = 0;
 
-      subTotal += (product.priceCents / 100) * item.quantity;
+    cartItems.forEach(item => {
+      const price = parseFloat(item.querySelector('.product-price').innerText.replace("$", ""));
+      const quantity = parseFloat(item.querySelector('.quantity-label').innerText);
+      const selectedShipping = item.querySelector('input[type="radio"]:checked').nextElementSibling.querySelector('.delivery-option-price').innerText;
 
-      const deliveryInput = document.querySelector(`input[name="delivery-option-${product.id}"]:checked`);
-      if (deliveryInput) {
-        shipping += parseFloat(deliveryInput.dataset.price);
-        document.querySelector('.order-summary-date').textContent = deliveryInput.dataset.date;
-        document.querySelector('.order-summary-price').textContent = `$${deliveryInput.dataset.price}`;
+      subTotal += price * quantity;
+
+      if (selectedShipping.includes("FREE")) {
+        shipping += 0;
+      } else {
+        shipping += parseFloat(selectedShipping.replace("$", "").replace("- Shipping", "").trim());
       }
     });
 
     const beforeTax = subTotal + shipping;
     const tax = beforeTax * 0.10;
-    const total = beforeTax + tax;
+    const total = tax + beforeTax;
 
-    document.querySelector('.payment-summary-subtotal').textContent = `$${subTotal.toFixed(2)}`;
-    document.querySelector('.payment-summary-shipping').textContent = `$${shipping.toFixed(2)}`;
-    document.querySelector('.payment-summary-before-tax').textContent = `$${beforeTax.toFixed(2)}`;
-    document.querySelector('.payment-summary-tax').textContent = `$${tax.toFixed(2)}`;
-    document.querySelector('.payment-summary-total').textContent = `$${total.toFixed(2)}`;
+    document.querySelector('.payment-summary-subtotal').innerText = `$${subTotal.toFixed(2)}`;
+    document.querySelector('.payment-summary-shipping').innerText = `$${shipping.toFixed(2)}`;
+    document.querySelector('.payment-summary-before-tax').innerText = `$${beforeTax.toFixed(2)}`;
+    document.querySelector('.payment-summary-tax').innerText = `$${tax.toFixed(2)}`;
+    document.querySelector('.payment-summary-total').innerText = `$${total.toFixed(2)}`;
 
-    loading.style.display = 'none';
+    loadingSpinner.style.display = 'none'; // hide spinner after everything is calculated
   }, 1000);
 }
+updatePaymentSummary();
 
-function placeOrder() {
-  const loading = document.querySelector('.payment-summary-loading');
-  if (loading) loading.style.display = 'block';
+document.querySelectorAll('.quantity-input').forEach(input => {
+  input.addEventListener('change', () => {
+    updatePaymentSummary();
+  });
+});
 
-  const order = {
-    id: `order-${Date.now()}`,
-    date: new Date().toISOString(),
-    items: cart,
-    total: calculateAmount(cart)
-  };
+document.querySelectorAll('.delivery-option-input').forEach(radio => {
+  radio.addEventListener('change', () => {
+    updatePaymentSummary();
+  });
+})
 
-  const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+function placeOrder(){
+  const loadingSpinner = document.querySelector('.payment-summary-loading');
+  loadingSpinner.style.display = 'block';
+
+  let cart = JSON.parse(localStorage.getItem('cart-saved')) || [];
+
+  if (cart.length > 0) {
+    let order = {
+      orderId: `order-${Date.now()}`,
+      orderDate: new Date().toISOString().split('T')[0],
+      deliveryDate: getFutureDates(5),
+      totalAmount: calculateAmount(cart),
+      products: cart.map(product => ({
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        quantity: product.quantity,
+        price: product.price
+      }))
+    };
+    
+  let orders = JSON.parse(localStorage.getItem('orders')) || [];
   orders.push(order);
-  localStorage.setItem('orders', JSON.stringify(orders));
+  localStorage.setItem('orders',JSON.stringify(orders));
+  }
+
+  const cartItems = document.querySelectorAll('.cart-item-container');
+  cartItems.forEach(items => {
+    items.remove()
+    }
+  );
+
   localStorage.removeItem('cart-saved');
 
-  setTimeout(() => {
-    if (loading) loading.style.display = 'none';
-    alert('Order placed!');
-    window.location.href = '/orders.html';
-  }, 1500);
-}
+  document.querySelector('.payment-summary-subtotal').innerText = '$0.00';
+  document.querySelector('.payment-summary-shipping').innerText = '$0.00';
+  document.querySelector('.payment-summary-before-tax').innerText = '$0.00';
+  document.querySelector('.payment-summary-tax').innerText = '$0.00';
+  document.querySelector('.payment-summary-total').innerText = '$0.00';
 
-document.addEventListener('DOMContentLoaded', () => {
-  updateCartQuantity();
-  renderCheckoutPage();
-  updatePaymentSummary();
-  const placeBtn = document.querySelector('.place-order-button');
-  if (placeBtn) placeBtn.addEventListener('click', placeOrder);
-});
+  setTimeout(() => {
+    loadingSpinner.style.display = 'none';
+    alert("Order placed successfully!");
+    window.location.href = "orders.html";
+  }, 1500);
+} 
+
+document.querySelector('.place-order-button').addEventListener('click', placeOrder);
+
