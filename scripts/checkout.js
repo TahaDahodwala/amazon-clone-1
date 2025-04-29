@@ -291,7 +291,7 @@ function placeOrder(){
   setTimeout(() => {
     loadingSpinner.style.display = 'none';
     alert("Order placed successfully!");
-    window.location.href = "orders.html";
+    window.location.href = "amazon.html";
   }, 1500);
 } 
 
