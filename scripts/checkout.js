@@ -13,8 +13,7 @@ const options = {weekday: 'long', month: 'long', day: 'numeric'};
 return today.toLocaleDateString('en-US', options);
 }
 
-
-updateCartQuantity();
+  updateCartQuantity();
 let checkoutHTML='';
 let matchingId;
 
@@ -120,17 +119,7 @@ cart.forEach((cartItem) => {
   `;
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const orderSummaryContainer = document.querySelector(".js-order-summary");
-  if (orderSummaryContainer) {
-    orderSummaryContainer.innerHTML = checkoutHTML;
-  } else {
-    console.error("Element with class '.js-order-summary' not found!");
-  }
-
-  // You can safely run the rest of your DOM manipulation here too
-});
-
+document.querySelector(".js-order-summary").innerHTML = checkoutHTML;
 
 document.querySelectorAll(".delete-from-cart-js").forEach(link => {
   link.addEventListener('click', () => {
