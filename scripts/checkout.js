@@ -201,7 +201,6 @@ function updateTotalPrice () {
   total += shippingCost;
 
   document.querySelector('.order-summary-price').textContent = `${total.Tofixed(2)}`;
- console.log("Hey there.");
 }
 
 function updatePaymentSummary() {
